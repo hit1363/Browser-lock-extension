@@ -1,4 +1,4 @@
-<div style="font-size: 15px; line-height: 1.6;">
+<div style="font-size: 13px; line-height: 1.6;">
   
 # Secure Browser Lock
 
