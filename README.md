@@ -1,3 +1,4 @@
+<div style="font-size: 15px; line-height: 1.6;">
 # Secure Browser Lock
 
 Secure Browser Lock is a powerful Chrome extension designed to protect your browser from unauthorized access. With password protection and a convenient one-click lock feature, you can safeguard all open tabs and windows when stepping away from your device. Whether you're working in a shared environment or just want extra peace of mind, this tool ensures your browsing activity remains private and secure.
@@ -138,6 +139,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ![image](https://github.com/user-attachments/assets/dd12f4f5-ae43-451b-ab92-9b8b509a965a)
 ![image](https://github.com/user-attachments/assets/dcc04f4e-f640-41e5-a3a1-fe23f40ad0c1)
 
+</div>
 
 ### Unlock Page
 ![image](https://github.com/user-attachments/assets/f802db56-b361-40a4-8648-be35130027a4)
