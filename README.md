@@ -65,4 +65,45 @@ Secure Browser Lock is a powerful Chrome extension designed to protect your brow
 ## Development
 
 ### File Structure
-Browser-lock-extension/ │ ├── assets/ │ ├── options.js # JavaScript for the Options page │ ├── unlock.js # JavaScript for the Unlock page │ ├── main.js # Core functionality │ ├── css/ │ ├── styles.css # Common styles for the extension │ ├── html/ │ ├── options.html # Options page │ ├── unlock.html # Unlock page │ ├── _locales/ │ ├── en/ # English translations │ ├── de/ # German translations │ ├── zh-CN/ # Simplified Chinese translations │ ├── zh-TW/ # Traditional Chinese translations │ ├── ru/ # Russian translations │ ├── hi/ # Hindi translations │ ├── ja/ # Japanese translations │ ├── manifest.json # Chrome extension manifest └── README.md # Documentation
+BROWSEK-LOCK-EXTENSION/
+├── _locales/
+│   ├── ar/
+│   │   └── messages.json
+│   ├── bn/
+│   │   └── messages.json
+│   ├── de/
+│   │   └── messages.json
+│   ├── en/
+│   │   └── messages.json
+│   ├── es/
+│   │   └── messages.json
+│   ├── fr/
+│   │   └── messages.json
+│   ├── hi/
+│   │   └── messages.json
+│   ├── ja/
+│   │   └── messages.json
+│   ├── ru/
+│   │   └── messages.json
+│   ├── zh-CN/
+│   │   └── messages.json
+│   └── zh-TW/
+│       └── messages.json
+├── assets/
+│   ├── main.js
+│   ├── options.js
+│   └── unlock.js
+├── css/
+│   └── styles.css
+├── html/
+│   ├── options.html
+│   └── unlock.html
+├── img/
+│   ├── iconslock-16.png
+│   ├── iconslock-48.png
+│   ├── iconslock-128.png
+│   ├── locked.png
+│   └── gitattributes
+├── LICENSE
+└── manifest.json
+
