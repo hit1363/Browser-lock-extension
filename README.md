@@ -131,6 +131,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgments
 
 - Icons by [Flaticon](https://www.flaticon.com/free-icons/locked).
+- Some JavaScript logic and code structures are adapted from the [Blocker extension by zimocode](https://github.com/zimocode/blocker)
 
 ---
 
