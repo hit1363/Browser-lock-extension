@@ -1,0 +1,41 @@
+{
+    "manifest_version": 3,
+    "name": "__MSG_ext_name__",
+    "description": "__MSG_ext_des__",
+    "version": "1.0.0",
+    "default_locale":"en",
+    "icons":
+    {
+        "16": "./img/iconslock-16.png",
+        "48": "./img/iconslock-48.png",
+        "128": "./img/iconslock-128.png"
+    },
+    "action":
+    {
+        "default_title": "__MSG_ext_title__"
+    },
+    "background":
+    {
+        "service_worker": "./assets/main.js",
+        "type": "module"
+    },
+    "options_ui":
+    {
+        "page": "./html/options.html",
+        "open_in_tab": false
+    },
+    "permissions": ["storage", "sessions"],
+    "commands":{
+        "_execute_action":{
+            "suggested_key":{
+                "default":"Ctrl+Shift+L",
+                "mac":"MacCtrl+Shift+L"
+            }
+        }
+    },
+    "web_accessible_resources": [
+    {
+        "resources": ["img/*"],
+        "matches": ["<all_urls>"]
+    }]
+}

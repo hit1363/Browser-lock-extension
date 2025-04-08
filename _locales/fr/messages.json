@@ -1,0 +1,65 @@
+{
+    "ext_name": {
+        "message": "Verrouillage Sécurisé du Navigateur"
+    },
+    "ext_des": {
+        "message": "Verrouillage Sécurisé du Navigateur est une extension puissante conçue pour protéger votre navigateur contre tout accès non autorisé. Grâce à une protection par mot de passe et une fonction de verrouillage en un clic, vous pouvez sécuriser tous les onglets et fenêtres ouverts lorsque vous vous éloignez de votre appareil. Que vous travailliez dans un environnement partagé ou que vous souhaitiez simplement plus de tranquillité d'esprit, cet outil garantit que votre activité de navigation reste toujours privée et sécurisée."
+    },
+    "ext_title": {
+        "message": "Cliquez pour verrouiller votre navigateur et sécuriser toutes les fenêtres ouvertes."
+    },
+    "title_locked": {
+        "message": "Navigateur Verrouillé"
+    },
+    "title_unlock": {
+        "message": "Déverrouiller le Navigateur"
+    },
+    "title_change_passwd": {
+        "message": "Mettre à Jour le Mot de Passe"
+    },
+    "title_set_passwd": {
+        "message": "Définir un Mot de Passe"
+    },
+    "title_last_passwd": {
+        "message": "Mot de Passe Actuel"
+    },
+    "title_new_passwd": {
+        "message": "Nouveau Mot de Passe"
+    },
+    "title_new_check_passwd": {
+        "message": "Confirmer le Nouveau Mot de Passe"
+    },
+    "notif_change_passwd": {
+        "message": "Le mot de passe a été mis à jour avec succès."
+    },
+    "notif_set_passwd": {
+        "message": "Le mot de passe a été défini avec succès."
+    },
+    "notif_wrong_passwd": {
+        "message": "Mot de passe incorrect ! Veuillez réessayer."
+    },
+    "notif_not_match_passwd": {
+        "message": "Les mots de passe ne correspondent pas. Veuillez réessayer."
+    },
+    "notif_last_wrong_passwd": {
+        "message": "Le mot de passe actuel saisi est incorrect."
+    },
+    "notif_enter_passwd": {
+        "message": "Veuillez entrer votre mot de passe."
+    },
+    "btn_unlock": {
+        "message": "Déverrouiller"
+    },
+    "btn_save": {
+        "message": "Enregistrer"
+    },
+    "link_review": {
+        "message": "Laisser un Avis"
+    },
+    "link_source": {
+        "message": "Voir le Code Source"
+    },
+    "notif_first": {
+        "message": "<i>Important :<br>1. Cette extension ne fonctionnera qu'après la définition d’un mot de passe.<br>2. Pour éviter d'éventuels conflits, assurez-vous qu'aucune autre extension similaire n'est installée avant de définir votre mot de passe.</i>"
+    }
+}

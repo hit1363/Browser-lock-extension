@@ -1,0 +1,65 @@
+{
+    "ext_name": {
+        "message": "Secure Browser Locked"
+    },
+    "ext_des": {
+        "message": "Secure Browser Lock is a powerful extension designed to protect your browser from unauthorized access. With password protection and a convenient one-click lock feature, you can safeguard all open tabs and windows when stepping away from your device. Whether you're working in a shared environment or just want extra peace of mind, this tool ensures your browsing activity remains private and secure at all times."
+    },
+    "ext_title": {
+        "message": "Click to lock your browser and secure all open windows."
+    },
+    "title_locked": {
+        "message": "Browser Locked"
+    },
+    "title_unlock": {
+        "message": "Unlock Browser"
+    },
+    "title_change_passwd": {
+        "message": "Update Password"
+    },
+    "title_set_passwd": {
+        "message": "Set Password"
+    },
+    "title_last_passwd": {
+        "message": "Current Password"
+    },
+    "title_new_passwd": {
+        "message": "New Password"
+    },
+    "title_new_check_passwd": {
+        "message": "Confirm New Password"
+    },
+    "notif_change_passwd": {
+        "message": "Password updated successfully."
+    },
+    "notif_set_passwd": {
+        "message": "Password set successfully."
+    },
+    "notif_wrong_passwd": {
+        "message": "Incorrect password! Please try again."
+    },
+    "notif_not_match_passwd": {
+        "message": "Passwords do not match. Please try again."
+    },
+    "notif_last_wrong_passwd": {
+        "message": "The current password entered is incorrect."
+    },
+    "notif_enter_passwd": {
+        "message": "Please enter your password."
+    },
+    "btn_unlock": {
+        "message": "Unlock"
+    },
+    "btn_save": {
+        "message": "Save"
+    },
+    "link_review": {
+        "message": "Leave a Review"
+    },
+    "link_source": {
+        "message": "View Source Code"
+    },
+    "notif_first": {
+        "message": "<i>Important:<br>1. This extension will only function after a password is set.<br>2. To avoid potential conflicts, ensure no similar extensions are installed before setting your password.</i>"
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "ext_name": {
+        "message": "安全瀏覽器鎖"
+    },
+    "ext_des": {
+        "message": "安全瀏覽器鎖是一個強大的擴充功能，旨在保護您的瀏覽器免受未經授權的訪問。透過密碼保護和便捷的一鍵鎖定功能，您可以在離開設備時保護所有打開的標籤頁和視窗。無論您是在共享環境中工作，還是只是想要額外的安心，此工具都能確保您的瀏覽活動始終保持私密和安全。"
+    },
+    "ext_title": {
+        "message": "點擊以鎖定您的瀏覽器並保護所有打開的視窗。"
+    },
+    "title_locked": {
+        "message": "瀏覽器已鎖定"
+    },
+    "title_unlock": {
+        "message": "解鎖瀏覽器"
+    },
+    "title_change_passwd": {
+        "message": "更新密碼"
+    },
+    "title_set_passwd": {
+        "message": "設定密碼"
+    },
+    "title_last_passwd": {
+        "message": "當前密碼"
+    },
+    "title_new_passwd": {
+        "message": "新密碼"
+    },
+    "title_new_check_passwd": {
+        "message": "確認新密碼"
+    },
+    "notif_change_passwd": {
+        "message": "密碼已成功更新。"
+    },
+    "notif_set_passwd": {
+        "message": "密碼已成功設定。"
+    },
+    "notif_wrong_passwd": {
+        "message": "密碼錯誤！請重試。"
+    },
+    "notif_not_match_passwd": {
+        "message": "密碼不匹配。請重試。"
+    },
+    "notif_last_wrong_passwd": {
+        "message": "輸入的當前密碼不正確。"
+    },
+    "notif_enter_passwd": {
+        "message": "請輸入您的密碼。"
+    },
+    "btn_unlock": {
+        "message": "解鎖"
+    },
+    "btn_save": {
+        "message": "保存"
+    },
+    "link_review": {
+        "message": "留下評論"
+    },
+    "link_source": {
+        "message": "查看原始碼"
+    },
+    "notif_first": {
+        "message": "<i>重要提示：<br>1. 此擴充功能僅在設定密碼後才能正常運作。<br>2. 為避免潛在衝突，請在設定密碼前確保未安裝類似的擴充功能。</i>"
+    }
+}

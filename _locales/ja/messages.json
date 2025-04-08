@@ -1,0 +1,65 @@
+{
+    "ext_name": {
+        "message": "セキュアブラウザロック"
+    },
+    "ext_des": {
+        "message": "セキュアブラウザロックは、ブラウザを不正アクセスから保護するために設計された強力な拡張機能です。パスワード保護と便利なワンクリックロック機能を備え、デバイスから離れる際にすべての開いているタブとウィンドウを安全に保つことができます。共有環境で作業している場合でも、追加の安心感が欲しい場合でも、このツールは常にブラウジング活動をプライベートで安全に保つことを保証します。"
+    },
+    "ext_title": {
+        "message": "ブラウザをロックして、すべての開いているウィンドウを安全に保つにはクリックしてください。"
+    },
+    "title_locked": {
+        "message": "ブラウザがロックされました"
+    },
+    "title_unlock": {
+        "message": "ブラウザをアンロック"
+    },
+    "title_change_passwd": {
+        "message": "パスワードを更新"
+    },
+    "title_set_passwd": {
+        "message": "パスワードを設定"
+    },
+    "title_last_passwd": {
+        "message": "現在のパスワード"
+    },
+    "title_new_passwd": {
+        "message": "新しいパスワード"
+    },
+    "title_new_check_passwd": {
+        "message": "新しいパスワードを確認"
+    },
+    "notif_change_passwd": {
+        "message": "パスワードが正常に更新されました。"
+    },
+    "notif_set_passwd": {
+        "message": "パスワードが正常に設定されました。"
+    },
+    "notif_wrong_passwd": {
+        "message": "パスワードが間違っています！もう一度お試しください。"
+    },
+    "notif_not_match_passwd": {
+        "message": "パスワードが一致しません。もう一度お試しください。"
+    },
+    "notif_last_wrong_passwd": {
+        "message": "入力された現在のパスワードが間違っています。"
+    },
+    "notif_enter_passwd": {
+        "message": "パスワードを入力してください。"
+    },
+    "btn_unlock": {
+        "message": "アンロック"
+    },
+    "btn_save": {
+        "message": "保存"
+    },
+    "link_review": {
+        "message": "レビューを残す"
+    },
+    "link_source": {
+        "message": "ソースコードを見る"
+    },
+    "notif_first": {
+        "message": "<i>重要:<br>1. この拡張機能は、パスワードが設定された後にのみ機能します。<br>2. 潜在的な競合を回避するために、パスワードを設定する前に類似の拡張機能がインストールされていないことを確認してください。</i>"
+    }
+}

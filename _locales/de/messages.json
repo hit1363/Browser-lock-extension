@@ -1,0 +1,65 @@
+{
+    "ext_name": {
+        "message": "Sicherer Browser-Sperre"
+    },
+    "ext_des": {
+        "message": "Sicherer Browser-Sperre ist eine leistungsstarke Erweiterung, die Ihren Browser vor unbefugtem Zugriff schützt. Mit Passwortschutz und einer praktischen Ein-Klick-Sperrfunktion können Sie alle geöffneten Tabs und Fenster sichern, wenn Sie sich von Ihrem Gerät entfernen. Egal, ob Sie in einer gemeinsam genutzten Umgebung arbeiten oder einfach mehr Sicherheit wünschen – dieses Tool sorgt dafür, dass Ihre Browseraktivitäten stets privat und geschützt bleiben."
+    },
+    "ext_title": {
+        "message": "Klicken Sie hier, um Ihren Browser zu sperren und alle geöffneten Fenster zu sichern."
+    },
+    "title_locked": {
+        "message": "Browser gesperrt"
+    },
+    "title_unlock": {
+        "message": "Browser entsperren"
+    },
+    "title_change_passwd": {
+        "message": "Passwort aktualisieren"
+    },
+    "title_set_passwd": {
+        "message": "Passwort festlegen"
+    },
+    "title_last_passwd": {
+        "message": "Aktuelles Passwort"
+    },
+    "title_new_passwd": {
+        "message": "Neues Passwort"
+    },
+    "title_new_check_passwd": {
+        "message": "Neues Passwort bestätigen"
+    },
+    "notif_change_passwd": {
+        "message": "Passwort wurde erfolgreich aktualisiert."
+    },
+    "notif_set_passwd": {
+        "message": "Passwort wurde erfolgreich festgelegt."
+    },
+    "notif_wrong_passwd": {
+        "message": "Falsches Passwort! Bitte versuchen Sie es erneut."
+    },
+    "notif_not_match_passwd": {
+        "message": "Passwörter stimmen nicht überein. Bitte erneut versuchen."
+    },
+    "notif_last_wrong_passwd": {
+        "message": "Das eingegebene aktuelle Passwort ist falsch."
+    },
+    "notif_enter_passwd": {
+        "message": "Bitte geben Sie Ihr Passwort ein."
+    },
+    "btn_unlock": {
+        "message": "Entsperren"
+    },
+    "btn_save": {
+        "message": "Speichern"
+    },
+    "link_review": {
+        "message": "Bewertung hinterlassen"
+    },
+    "link_source": {
+        "message": "Quellcode anzeigen"
+    },
+    "notif_first": {
+        "message": "<i>Wichtig:<br>1. Diese Erweiterung funktioniert nur, nachdem ein Passwort festgelegt wurde.<br>2. Um mögliche Konflikte zu vermeiden, stellen Sie sicher, dass keine ähnlichen Erweiterungen installiert sind, bevor Sie das Passwort festlegen.</i>"
+    }
+}

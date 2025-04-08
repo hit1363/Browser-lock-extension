@@ -1,0 +1,65 @@
+{
+    "ext_name": {
+        "message": "Bloqueo Seguro del Navegador"
+    },
+    "ext_des": {
+        "message": "Bloqueo Seguro del Navegador es una potente extensión diseñada para proteger tu navegador contra accesos no autorizados. Con protección por contraseña y una función de bloqueo con un solo clic, puedes asegurar todas las pestañas y ventanas abiertas cuando te alejas de tu dispositivo. Ya sea que trabajes en un entorno compartido o simplemente busques mayor tranquilidad, esta herramienta garantiza que tu actividad de navegación permanezca siempre privada y segura."
+    },
+    "ext_title": {
+        "message": "Haz clic para bloquear tu navegador y proteger todas las ventanas abiertas."
+    },
+    "title_locked": {
+        "message": "Navegador Bloqueado"
+    },
+    "title_unlock": {
+        "message": "Desbloquear Navegador"
+    },
+    "title_change_passwd": {
+        "message": "Actualizar Contraseña"
+    },
+    "title_set_passwd": {
+        "message": "Establecer Contraseña"
+    },
+    "title_last_passwd": {
+        "message": "Contraseña Actual"
+    },
+    "title_new_passwd": {
+        "message": "Nueva Contraseña"
+    },
+    "title_new_check_passwd": {
+        "message": "Confirmar Nueva Contraseña"
+    },
+    "notif_change_passwd": {
+        "message": "La contraseña se ha actualizado correctamente."
+    },
+    "notif_set_passwd": {
+        "message": "La contraseña se ha establecido correctamente."
+    },
+    "notif_wrong_passwd": {
+        "message": "¡Contraseña incorrecta! Inténtalo de nuevo."
+    },
+    "notif_not_match_passwd": {
+        "message": "Las contraseñas no coinciden. Por favor, inténtalo de nuevo."
+    },
+    "notif_last_wrong_passwd": {
+        "message": "La contraseña actual que ingresaste es incorrecta."
+    },
+    "notif_enter_passwd": {
+        "message": "Por favor, introduce tu contraseña."
+    },
+    "btn_unlock": {
+        "message": "Desbloquear"
+    },
+    "btn_save": {
+        "message": "Guardar"
+    },
+    "link_review": {
+        "message": "Dejar una Reseña"
+    },
+    "link_source": {
+        "message": "Ver Código Fuente"
+    },
+    "notif_first": {
+        "message": "<i>Importante:<br>1. Esta extensión solo funcionará después de establecer una contraseña.<br>2. Para evitar posibles conflictos, asegúrate de no tener instaladas otras extensiones similares antes de configurar la contraseña.</i>"
+    }
+}
