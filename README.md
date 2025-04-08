@@ -31,18 +31,18 @@ Secure Browser Lock is a powerful Chrome extension designed to protect your brow
 ### Setting a Password
 1. Open the extension's ***Options*** page.
 2. Enter a new password and confirm it.
-3. Click **Save** to set your password.
+3. Click ***Save*** to set your password.
 
 ### Locking the Browser
 1. Click the extension icon in the Chrome toolbar.
-2. Select **Lock Browser** to secure all open tabs and windows.
+2. Select ***Lock Browser*** to secure all open tabs and windows.
 
 ### Unlocking the Browser
 1. Enter your password in the unlock screen.
-2. Click **Unlock** to regain access to your browser.
+2. Click ***Unlock*** to regain access to your browser.
 
 ### Changing the Language
-1. Use the language selector in the **Options** or **Unlock** page.
+1. Use the language selector in the ***Options** or ***Unlock*** page.
 2. Select your preferred language from the dropdown menu.
 3. The interface will reload with the selected language.
 
