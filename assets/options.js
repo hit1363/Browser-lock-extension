@@ -47,7 +47,7 @@ const blo = {
             },
             attributes: {
                 "#link-review": { href: `` },
-                "#link-source": { href: "https://github.com/zimocode/blocker" },
+                "#link-source": { href: "https://github.com/hit1363/Browser-lock-extension" },
             },
             styles: {
                 ".password-input#passwd-last": { display: config?.passwd ? "flex" : "none" },
