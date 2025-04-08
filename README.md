@@ -29,7 +29,7 @@ Secure Browser Lock is a powerful Chrome extension designed to protect your brow
 ## Usage
 
 ### Setting a Password
-1. Open the extension's *Options* page.
+1. Open the extension's ***Options*** page.
 2. Enter a new password and confirm it.
 3. Click **Save** to set your password.
 
