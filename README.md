@@ -137,8 +137,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgments
 
-- Icons by [Material Design Icons]([https://material.io/resources/icons/](https://www.flaticon.com/free-icons/locked)).
-- Localization powered by Chrome's [i18n API](https://developer.chrome.com/docs/extensions/mv3/i18n/).
+- Icons by [https://material.io/resources/icons/](https://www.flaticon.com/free-icons/locked).
 
 ---
 
