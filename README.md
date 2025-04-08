@@ -62,8 +62,6 @@ Secure Browser Lock is a powerful Chrome extension designed to protect your brow
 
 ---
 
-## Development
-
 ### File Structure
 ```
 BROWSER-LOCK-EXTENSION/
@@ -115,13 +113,6 @@ BROWSER-LOCK-EXTENSION/
 └── manifest.json
 ```
 
-
-### Adding a New Language
-1. Create a new folder in `_locales` with the language code (e.g., `fr` for French).
-2. Add a `messages.json` file with translations for all keys.
-3. Update the language selector in `options.html` and `unlock.html` to include the new language.
-
----
 
 ## Contributing
 
