@@ -115,3 +115,37 @@ BROWSER-LOCK-EXTENSION/
 └── manifest.json
 ```
 
+
+### Adding a New Language
+1. Create a new folder in `_locales` with the language code (e.g., `fr` for French).
+2. Add a `messages.json` file with translations for all keys.
+3. Update the language selector in `options.html` and `unlock.html` to include the new language.
+
+---
+
+## Contributing
+
+Contributions are welcome! If you'd like to add features, fix bugs, or improve the extension, feel free to submit a pull request.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+- Icons by [Material Design Icons]([https://material.io/resources/icons/](https://www.flaticon.com/free-icons/locked)).
+- Localization powered by Chrome's [i18n API](https://developer.chrome.com/docs/extensions/mv3/i18n/).
+
+---
+
+## Screenshots
+
+### Options Page
+![Options Page](screenshots/options-page.png)
+
+### Unlock Page
+![Unlock Page](screenshots/unlock-page.png)
