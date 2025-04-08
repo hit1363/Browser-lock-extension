@@ -144,11 +144,11 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Screenshots
 
 ### Options Page
-![Options Page](![image](https://github.com/user-attachments/assets/dd12f4f5-ae43-451b-ab92-9b8b509a965a)
+(![image](https://github.com/user-attachments/assets/dd12f4f5-ae43-451b-ab92-9b8b509a965a)
 (![image](https://github.com/user-attachments/assets/dcc04f4e-f640-41e5-a3a1-fe23f40ad0c1)
 )
 
 ### Unlock Page
-![Unlock Page](![image](https://github.com/user-attachments/assets/f802db56-b361-40a4-8648-be35130027a4)
+(![image](https://github.com/user-attachments/assets/f802db56-b361-40a4-8648-be35130027a4)
 (![image](https://github.com/user-attachments/assets/ef2eea44-234a-4183-85e3-e5b916da8280)
 )
