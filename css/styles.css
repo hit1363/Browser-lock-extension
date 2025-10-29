@@ -11,7 +11,6 @@
     --button-color: #718dda;
     --button-hover-color: #3c6efa;
     --button-text-color: #fff;
-    --button-border-color: #ccc;
 
     /* Links */
     --link-color: #00518b;
@@ -31,7 +30,6 @@
     --button-color: #718dda;
     --button-hover-color: #4373f8;
     --button-text-color: #fff;
-    --button-border-color: #ccc;
 
     /* Links */
     --link-color: #00aaff;
@@ -60,6 +58,12 @@
     transform: translateY(+6px);
 }
 
+.theme-toggle:focus {
+    outline: 3px solid var(--button-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 15px rgba(113, 141, 218, 0.6);
+}
+
 .theme-toggle svg {
     fill: var(--text-color);
 }
@@ -82,7 +86,7 @@
 }
 
 html, body {
-    font-size: 1px;
+    font-size: 16px;
     margin: 0;
     padding: 0;
 }
@@ -110,12 +114,13 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin: 4px 8px;
+    margin: 6px 8px;
 }
 
 /* Logo Styles */
 .logo {
     width: 64px;
+    margin-bottom: 8px;
 }
 
 /* Password Input Container */
@@ -125,6 +130,14 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 /* Password Input Styles */
@@ -144,6 +157,72 @@ body {
 .password-input:hover {
     transform: translateY(-6px);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.password-input:focus {
+    outline: 3px solid var(--button-color);
+    outline-offset: 2px;
+    transform: translateY(-6px);
+    box-shadow: 0 0 20px rgba(113, 141, 218, 0.5);
+}
+
+.password-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Password Visibility Toggle Button */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    opacity: 0.6;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.toggle-password:focus {
+    outline: 2px solid var(--button-color);
+    outline-offset: 2px;
+    border-radius: 4px;
+    opacity: 1;
+}
+
+.toggle-password svg {
+    pointer-events: none;
+}
+
+/* Adjust password input padding to make room for toggle button */
+.password-input-wrapper .password-input {
+    padding-right: 45px;
+}
+
+/* Screen reader only class for accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }
 
 /* Titles */
@@ -171,11 +250,25 @@ body {
     background: var(--button-hover-color);
 }
 
+.button:focus {
+    outline: 3px solid var(--button-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 15px rgba(113, 141, 218, 0.6);
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--accent-color);
+}
+
 /* Notification Styles */
 .notification {
     color: var(--notify-color);
     font-size: 14px;
-    height: 24px;
+    min-height: 24px;
+    margin: 8px 0;
+    padding: 4px 0;
 }
 
 /* Footer Styles */
@@ -205,5 +298,56 @@ body {
 /* First User Notification */
 .first-user-notification {
     font-size: 14px;
-    color: red;
+    color: var(--notify-color);
+    margin: 8px 0;
+    padding: 4px 0;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 24px;
+    margin: 12px 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.password-strength.weak {
+    color: #d32f2f;
+    background-color: rgba(211, 47, 47, 0.1);
+}
+
+.password-strength.medium {
+    color: #f57c00;
+    background-color: rgba(245, 124, 0, 0.1);
+}
+
+.password-strength.strong {
+    color: #388e3c;
+    background-color: rgba(56, 142, 60, 0.1);
+}
+
+.dark-mode .password-strength.weak {
+    color: #ef5350;
+    background-color: rgba(239, 83, 80, 0.2);
+}
+
+.dark-mode .password-strength.medium {
+    color: #ffa726;
+    background-color: rgba(255, 167, 38, 0.2);
+}
+
+.dark-mode .password-strength.strong {
+    color: #66bb6a;
+    background-color: rgba(102, 187, 106, 0.2);
+}
+
+/* Link Focus Styles */
+.footer a:focus {
+    outline: 2px solid var(--link-color);
+    outline-offset: 2px;
+    border-radius: 2px;
 }

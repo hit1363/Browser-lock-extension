@@ -10,7 +10,7 @@ const arrayBufferToHex = (buffer) => {
 const hexToArrayBuffer = (hex) => {
     const bytes = new Uint8Array(hex.length / 2);
     for (let i = 0; i < bytes.length; i++) {
-        bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+        bytes[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16);
     }
     return bytes.buffer;
 };
@@ -257,9 +257,10 @@ const pbkdf2 = { encrypt, decrypt };
                 const actions = {
                     unlock: () => blocker.unlock(message, sender, sendResponse),
                     passwd: () => blocker.passwd(message, sender, sendResponse),
-                    config: async() => {
-                        await blocker.getConf();
-                        sendResponse({ type: "config", success: true, data: config });
+                    config: () => {
+                        blocker.getConf().then(() => {
+                            sendResponse({ type: "config", success: true, data: config });
+                        });
                     },
                     status: () => sendResponse({ type: "status", success: true, data: { PANNEL_OPENED, LOCKED } })
                 };

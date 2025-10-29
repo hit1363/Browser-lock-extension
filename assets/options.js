@@ -1,5 +1,4 @@
 let darkmode = localStorage.getItem("darkmode");
-const themeToggle = document.querySelector(".theme-toggle");
 
 const enableDarkMode = () => {
     document.body.classList.add("dark-mode");
@@ -15,10 +14,14 @@ if (darkmode === "active") {
     enableDarkMode();
 }
 
-themeToggle.addEventListener("click", () => {
-    darkmode = localStorage.getItem("darkmode");
-    darkmode !== "active" ? enableDarkMode() : disableDarkMode();
-});
+// Initialize theme toggle after DOM is ready
+const themeToggle = document.querySelector(".theme-toggle");
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        darkmode = localStorage.getItem("darkmode");
+        darkmode !== "active" ? enableDarkMode() : disableDarkMode();
+    });
+}
 
 let config;
 
@@ -46,7 +49,7 @@ const blo = {
                 ".first-user-notification": chrome.i18n.getMessage("notif_first"),
             },
             attributes: {
-                "#link-review": { href: `` },
+                "#link-review": { href: "https://github.com/hit1363/Browser-lock-extension" },
                 "#link-source": { href: "https://github.com/hit1363/Browser-lock-extension" },
             },
             styles: {
@@ -71,6 +74,90 @@ const blo = {
         Object.entries(configMap.styles).forEach(([selector, styles]) => {
             Object.assign(document.querySelector(selector).style, styles);
         });
+
+        // Initialize password visibility toggles
+        blo.initPasswordToggles();
+    },
+
+    /**
+     * Initialize password visibility toggle buttons
+     */
+    initPasswordToggles: () => {
+        const toggleButtons = document.querySelectorAll(".toggle-password");
+        toggleButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const targetId = this.getAttribute("data-target");
+                const targetInput = document.getElementById(targetId);
+                const eyeIcon = this.querySelector(".eye-icon");
+                const eyeOffIcon = this.querySelector(".eye-off-icon");
+
+                if (targetInput.type === "password") {
+                    targetInput.type = "text";
+                    eyeIcon.style.display = "none";
+                    eyeOffIcon.style.display = "block";
+                    this.setAttribute("aria-label", chrome.i18n.getMessage("toggle_hide_password") || "Hide password");
+                } else {
+                    targetInput.type = "password";
+                    eyeIcon.style.display = "block";
+                    eyeOffIcon.style.display = "none";
+                    this.setAttribute("aria-label", chrome.i18n.getMessage("toggle_show_password") || "Show password");
+                }
+            });
+        });
+
+        // Show/hide toggle button for passwd-last based on visibility
+        const passwdLastWrapper = document.querySelector('[data-target="passwd-last"]');
+        if (passwdLastWrapper) {
+            passwdLastWrapper.style.display = config?.passwd ? "flex" : "none";
+        }
+    },
+
+    /**
+     * Validates password strength
+     * @param {string} password - Password to validate
+     * @returns {Object} - {isValid: boolean, message: string, strength: string}
+     */
+    validatePasswordStrength: (password) => {
+        const minLength = 6;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+        if (password.length < minLength) {
+            return {
+                isValid: false,
+                message: chrome.i18n.getMessage("notif_passwd_too_short") || `Password must be at least ${minLength} characters`,
+                strength: "weak"
+            };
+        }
+
+        let strength = 0;
+        if (hasUpperCase) strength++;
+        if (hasLowerCase) strength++;
+        if (hasNumbers) strength++;
+        if (hasSpecialChar) strength++;
+        if (password.length >= 12) strength++;
+
+        let strengthLevel = "weak";
+        let strengthMessage = "";
+
+        if (strength >= 4) {
+            strengthLevel = "strong";
+            strengthMessage = chrome.i18n.getMessage("notif_passwd_strong") || "Strong password";
+        } else if (strength >= 2) {
+            strengthLevel = "medium";
+            strengthMessage = chrome.i18n.getMessage("notif_passwd_medium") || "Medium password";
+        } else {
+            strengthLevel = "weak";
+            strengthMessage = chrome.i18n.getMessage("notif_passwd_weak") || "Weak password - use uppercase, lowercase, numbers, and symbols";
+        }
+
+        return {
+            isValid: true,
+            message: strengthMessage,
+            strength: strengthLevel
+        };
     },
 
     handleEvent: event => {
@@ -78,6 +165,19 @@ const blo = {
             blo.passwd();
         } else if (event.type === "input") {
             event.target.value = event.target.value.trim();
+            
+            // Show password strength indicator while typing new password
+            if (event.target.id === "passwd-new") {
+                const validation = blo.validatePasswordStrength(event.target.value);
+                const strengthIndicator = document.querySelector(".password-strength");
+                if (strengthIndicator && event.target.value) {
+                    strengthIndicator.innerText = validation.message;
+                    strengthIndicator.className = `password-strength ${validation.strength}`;
+                    strengthIndicator.style.display = "block";
+                } else if (strengthIndicator) {
+                    strengthIndicator.style.display = "none";
+                }
+            }
         } else if (
             event.type === "keydown" &&
             ["passwd-last", "passwd-new", "passwd-new-check"].some(id => event.target.id === id) &&
@@ -96,6 +196,15 @@ const blo = {
         const [passwdLast, passwdNew, passwdCheck] = [domPasswdLast.value, domPasswdNew.value, domPasswdCheck.value].map(val => val.trim());
 
         const domNotif = document.querySelector(".notification");
+        
+        // Validate password strength
+        const validation = blo.validatePasswordStrength(passwdNew);
+        if (!validation.isValid) {
+            domNotif.innerText = validation.message;
+            setTimeout(() => (domNotif.innerText = ""), 3000);
+            return;
+        }
+
         if (passwdNew && passwdNew === passwdCheck) {
             const response = await chrome.runtime.sendMessage({ type: "passwd", data: { passwdNew, passwdLast } });
             domNotif.innerText = response?.success

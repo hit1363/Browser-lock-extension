@@ -29,9 +29,6 @@
     "title_new_check_passwd": {
         "message": "Confirm New Password"
     },
-    "notif_change_passwd": {
-        "message": "Password updated successfully."
-    },
     "notif_set_passwd": {
         "message": "Password set successfully."
     },
@@ -61,5 +58,29 @@
     },
     "notif_first": {
         "message": "<i>Important:<br>1. This extension will only function after a password is set.<br>2. To avoid potential conflicts, ensure no similar extensions are installed before setting your password.</i>"
+    },
+    "notif_passwd_too_short": {
+        "message": "Password must be at least 6 characters long."
+    },
+    "notif_passwd_weak": {
+        "message": "Weak password - use uppercase, lowercase, numbers, and symbols for better security."
+    },
+    "notif_passwd_medium": {
+        "message": "Medium password - consider adding more variety for stronger security."
+    },
+    "notif_passwd_strong": {
+        "message": "Strong password! Your browser is well protected."
+    },
+    "notif_lockout": {
+        "message": "Too many failed attempts. Please wait before trying again."
+    },
+    "notif_wrong_passwd_attempts": {
+        "message": "Incorrect password! Attempts remaining: "
+    },
+    "toggle_show_password": {
+        "message": "Show password"
+    },
+    "toggle_hide_password": {
+        "message": "Hide password"
     }
 }
