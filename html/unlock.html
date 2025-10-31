@@ -5,6 +5,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Unlock Browser</title>
+    <style>
+        /* Critical CSS for instant display */
+        body { margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .main-content { display: flex; flex-direction: column; align-items: center; padding: 32px; }
+        .password-input { width: 100%; font-size: 16px; height: 48px; padding: 15px; margin: 4px; border-radius: 10px; }
+    </style>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
 </head>
 
@@ -36,9 +42,6 @@
                     </svg>
                 </button>
             </div>
-        </div>
-        <div class="button-container">
-            <button class="button" id="btn-unlock" aria-label="Unlock browser"></button>
         </div>
     </main>
     <script type="module" src="../assets/unlock.js"></script>

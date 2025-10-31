@@ -24,7 +24,7 @@
         "page": "./html/options.html",
         "open_in_tab": false
     },
-    "permissions": ["storage", "sessions"],
+    "permissions": ["storage", "sessions", "windows"],
     "commands":{
         "_execute_action":{
             "suggested_key":{

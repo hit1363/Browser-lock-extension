@@ -1,10 +1,90 @@
+// Import Toast notification system
+const Toast = (() => {
+    let container = null;
+
+    return {
+        init() {
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+        },
+
+        show(message, options = {}) {
+            this.init();
+            const { type = 'default', duration = 3000, autoClose = true } = options;
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type} toast-top-right`;
+            
+            const icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠',
+                info: 'ℹ',
+                default: '●'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || icons.default}</div>
+                <div class="toast-message">${message}</div>
+                <button class="toast-close" aria-label="Close notification">×</button>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('toast-show'), 10);
+
+            toast.querySelector('.toast-close').addEventListener('click', () => this.close(toast));
+
+            if (autoClose && duration > 0) {
+                setTimeout(() => this.close(toast), duration);
+            }
+        },
+
+        close(toast) {
+            toast.classList.remove('toast-show');
+            toast.classList.add('toast-hide');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        },
+
+        success(message, options = {}) {
+            this.show(message, { ...options, type: 'success' });
+        },
+
+        error(message, options = {}) {
+            this.show(message, { ...options, type: 'error' });
+        },
+
+        warning(message, options = {}) {
+            this.show(message, { ...options, type: 'warning' });
+        },
+
+        info(message, options = {}) {
+            this.show(message, { ...options, type: 'info' });
+        }
+    };
+})();
+
+/** @type {string|null} Current dark mode preference from localStorage */
 let darkmode = localStorage.getItem("darkmode");
 
+/**
+ * Enables dark mode by adding CSS class and storing preference
+ * @returns {void}
+ */
 const enableDarkMode = () => {
     document.body.classList.add("dark-mode");
     localStorage.setItem("darkmode", "active");
 };
 
+/**
+ * Disables dark mode by removing CSS class and clearing preference
+ * @returns {void}
+ */
 const disableDarkMode = () => {
     document.body.classList.remove("dark-mode");
     localStorage.setItem("darkmode", null);
@@ -23,9 +103,14 @@ if (themeToggle) {
     });
 }
 
+/** @type {Object|null} Extension configuration from storage */
 let config;
 
 const blo = {
+    /**
+     * Initializes the options page UI and event listeners
+     * @returns {Promise<void>}
+     */
     init: async () => {
         ["click", "input", "keydown"].forEach(eventType =>
             window.addEventListener(eventType, blo.handleEvent, false)
@@ -77,6 +162,14 @@ const blo = {
 
         // Initialize password visibility toggles
         blo.initPasswordToggles();
+
+        // Add direct event listener to save button
+        const saveButton = document.querySelector("#btn-save");
+        if (saveButton) {
+            saveButton.addEventListener("click", () => {
+                blo.passwd();
+            });
+        }
     },
 
     /**
@@ -160,10 +253,65 @@ const blo = {
         };
     },
 
+    /**
+     * Displays recovery key modal with download and copy options
+     * @param {string} recoveryKey - The generated recovery key
+     * @returns {void}
+     */
+    showRecoveryKey: (recoveryKey) => {
+        const modal = document.createElement("div");
+        modal.className = "recovery-modal";
+        modal.innerHTML = `
+            <div class="recovery-modal-content">
+                <h2>${chrome.i18n.getMessage("recovery_title") || "Save Your Recovery Key"}</h2>
+                <p>${chrome.i18n.getMessage("recovery_description") || "Save this recovery key in a safe place. You'll need it to reset your password if you forget it."}</p>
+                <div class="recovery-key-display">${recoveryKey}</div>
+                <div class="recovery-actions">
+                    <button class="button recovery-copy">${chrome.i18n.getMessage("recovery_copy") || "Copy Key"}</button>
+                    <button class="button recovery-download">${chrome.i18n.getMessage("recovery_download") || "Download Key"}</button>
+                </div>
+                <p class="recovery-warning">${chrome.i18n.getMessage("recovery_warning") || "⚠️ This key will only be shown once. Make sure to save it!"}</p>
+                <button class="button recovery-close">${chrome.i18n.getMessage("recovery_close") || "I've Saved It"}</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Copy functionality
+        modal.querySelector(".recovery-copy").addEventListener("click", () => {
+            navigator.clipboard.writeText(recoveryKey);
+            const btn = modal.querySelector(".recovery-copy");
+            btn.innerText = chrome.i18n.getMessage("recovery_copied") || "✓ Copied!";
+            setTimeout(() => {
+                btn.innerText = chrome.i18n.getMessage("recovery_copy") || "Copy Key";
+            }, 2000);
+        });
+
+        // Download functionality
+        modal.querySelector(".recovery-download").addEventListener("click", () => {
+            const blob = new Blob([`Browser Lock Extension - Recovery Key\n\nYour Recovery Key: ${recoveryKey}\n\nKeep this safe! You'll need it to reset your password.\nDate: ${new Date().toLocaleDateString()}`], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "browser-lock-recovery-key.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Close functionality
+        modal.querySelector(".recovery-close").addEventListener("click", async () => {
+            modal.remove();
+            await chrome.runtime.reload();
+            window.close();
+        });
+    },
+
+    /**
+     * Handles user interaction events (click, input, keydown)
+     * @param {Event} event - The DOM event to handle
+     * @returns {void}
+     */
     handleEvent: event => {
-        if (event.type === "click" && event.target.classList.contains("button")) {
-            blo.passwd();
-        } else if (event.type === "input") {
+        if (event.type === "input") {
             event.target.value = event.target.value.trim();
             
             // Show password strength indicator while typing new password
@@ -187,6 +335,10 @@ const blo = {
         }
     },
 
+    /**
+     * Validates and saves/changes the master password
+     * @returns {Promise<void>}
+     */
     passwd: async () => {
         const [domPasswdLast, domPasswdNew, domPasswdCheck] = [
             ".password-input#passwd-last",
@@ -194,35 +346,35 @@ const blo = {
             ".password-input#passwd-new-check",
         ].map(selector => document.querySelector(selector));
         const [passwdLast, passwdNew, passwdCheck] = [domPasswdLast.value, domPasswdNew.value, domPasswdCheck.value].map(val => val.trim());
-
-        const domNotif = document.querySelector(".notification");
         
         // Validate password strength
         const validation = blo.validatePasswordStrength(passwdNew);
         if (!validation.isValid) {
-            domNotif.innerText = validation.message;
-            setTimeout(() => (domNotif.innerText = ""), 3000);
+            Toast.error(validation.message);
             return;
         }
 
         if (passwdNew && passwdNew === passwdCheck) {
             const response = await chrome.runtime.sendMessage({ type: "passwd", data: { passwdNew, passwdLast } });
-            domNotif.innerText = response?.success
-                ? chrome.i18n.getMessage("notif_set_passwd")
-                : chrome.i18n.getMessage("notif_last_wrong_passwd");
-            if (response?.success) {
+            
+            if (response?.success && response?.recoveryKey) {
+                // Password set or changed successfully - show recovery key
+                Toast.success(chrome.i18n.getMessage("notif_set_passwd") || "Password saved successfully!");
+                blo.showRecoveryKey(response.recoveryKey);
+            } else if (response?.success) {
+                // Password changed successfully (fallback if no recovery key)
+                Toast.success(chrome.i18n.getMessage("notif_set_passwd") || "Password updated successfully!");
                 setTimeout(async () => {
-                    domNotif.innerText = "";
                     await chrome.runtime.reload();
                     window.close();
-                }, 3000);
+                }, 2000);
             } else {
+                // Wrong old password
+                Toast.error(chrome.i18n.getMessage("notif_last_wrong_passwd") || "Current password is incorrect");
                 domPasswdLast.value = "";
-                setTimeout(() => (domNotif.innerText = ""), 3000);
             }
         } else {
-            domNotif.innerText = chrome.i18n.getMessage("notif_not_match_passwd");
-            setTimeout(() => (domNotif.innerText = ""), 3000);
+            Toast.error(chrome.i18n.getMessage("notif_not_match_passwd") || "Passwords do not match");
         }
     },
 };

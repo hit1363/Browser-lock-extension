@@ -82,5 +82,74 @@
     },
     "toggle_hide_password": {
         "message": "Hide password"
+    },
+    "forgot_password": {
+        "message": "Forgot Password?"
+    },
+    "recovery_title": {
+        "message": "Save Your Recovery Key"
+    },
+    "recovery_description": {
+        "message": "Save this recovery key in a safe place. You'll need it to reset your password if you forget it."
+    },
+    "recovery_warning": {
+        "message": "⚠️ This key will only be shown once. Make sure to save it!"
+    },
+    "recovery_copy": {
+        "message": "Copy Key"
+    },
+    "recovery_copied": {
+        "message": "✓ Copied!"
+    },
+    "recovery_download": {
+        "message": "Download Key"
+    },
+    "recovery_close": {
+        "message": "I've Saved It"
+    },
+    "recovery_reset_title": {
+        "message": "Reset Password with Recovery Key"
+    },
+    "recovery_reset_description": {
+        "message": "Enter your recovery key and create a new password"
+    },
+    "recovery_key_placeholder": {
+        "message": "Recovery Key (XXXXXX-XXXXXX-XXXXXX-XXXXXX)"
+    },
+    "recovery_submit": {
+        "message": "Reset Password"
+    },
+    "recovery_cancel": {
+        "message": "Cancel"
+    },
+    "recovery_empty_fields": {
+        "message": "Please fill in all fields"
+    },
+    "recovery_success": {
+        "message": "✓ Password reset successfully! Showing new recovery key..."
+    },
+    "recovery_failed": {
+        "message": "Invalid recovery key. Please check and try again."
+    },
+    "recovery_error": {
+        "message": "Error resetting password. Please try again."
+    },
+    "recovery_new_key_title": {
+        "message": "Save Your New Recovery Key"
+    },
+    "recovery_new_key_description": {
+        "message": "Your password has been reset successfully. Save this new recovery key in a safe place!"
+    },
+    "recovery_done": {
+        "message": "Done"
+    },
+    "notif_unlock_success": {
+        "message": "✓ Unlocked successfully!"
+    },
+    "notif_unlock_error": {
+        "message": "Error unlocking browser"
+    },
+    "notif_lockout_ended": {
+        "message": "You can try again now"
     }
 }
