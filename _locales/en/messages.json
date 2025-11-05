@@ -151,5 +151,11 @@
     },
     "notif_lockout_ended": {
         "message": "You can try again now"
+    },
+    "language_selector": {
+        "message": "Language"
+    },
+    "language_name": {
+        "message": "English"
     }
 }

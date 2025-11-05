@@ -197,34 +197,25 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
     return hash === storedHash;
 };
 
-
-;
+// Main extension logic wrapped in IIFE
 (async () => {
-    /** @type {boolean} Whether the browser is currently locked */
-    let LOCKED = false;
-    
-    /** @type {boolean} Whether the unlock panel is currently open */
-    let PANNEL_OPENED = false;
-    
-    /** @type {number|null} The window ID of the unlock panel */
-    let PANNEL_ID = null;
-    
-    /** @type {boolean} Whether storage changes are intentional (not tampering) */
-    let ALLOW_CHANGE = false;
-
-    /** @type {Object|null} The stored configuration */
-    let config = null;
-    
-    /** @type {boolean|null} Whether a password has been set */
-    let PASSWD_SETED = null;
+    // State management
+    const state = {
+        locked: false,
+        pannelOpened: false,
+        pannelId: null,
+        allowChange: false,
+        config: null,
+        passwdSet: false
+    };
 
     /**
      * Pre-loads configuration from storage for faster startup
      * @returns {Promise<void>}
      */
     const initConfig = async () => {
-        config = await chrome.storage.local.get();
-        PASSWD_SETED = !!config.passwd;
+        state.config = await chrome.storage.local.get();
+        state.passwdSet = !!state.config.passwd;
     };
 
     const blocker = {
@@ -235,14 +226,15 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
         init: async () => {
             // Load config first
             await initConfig();
-            // Check if browser just started - if yes, lock immediately
-            const windows = await chrome.windows.getAll();
-            if (windows.length === 0 || (PASSWD_SETED && windows.length > 0)) {
-                // Browser is starting, lock immediately
-                LOCKED = true;
+            
+            // Set up event handlers
+            await blocker.handle();
+            
+            // If password is set, lock immediately on startup
+            if (state.passwdSet) {
+                state.locked = true;
                 await blocker.lockPannel();
             }
-            await blocker.handle();
         },
 
         /**
@@ -250,7 +242,7 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
          * @returns {Promise<void>}
          */
         getConf: async () => {
-            if (config === null || PASSWD_SETED === null) {
+            if (!state.config || state.passwdSet === null) {
                 await initConfig();
             }
         },
@@ -273,12 +265,14 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
          * @returns {Promise<void>}
          */
         lock: async (fromIcon = false) => {
-            const { length: sessionCount } = await chrome.windows.getAll({ populate: true });
-
-            LOCKED = true;
+            const windows = await chrome.windows.getAll({ populate: true });
+            state.locked = true;
+            
+            // Save session count
+            await chrome.storage.session.set({ sessions: windows.length });
+            
+            // Show lock panel
             blocker.lockPannel(fromIcon);
-
-            await chrome.storage.session.set({ sessions: sessionCount });
         },
 
         /**
@@ -292,18 +286,25 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
             await blocker.getConf();
 
             const passwd = message?.data?.passwd;
-            const { data, salt } = config?.passwd || {};
+            const { data, salt } = state.config?.passwd || {};
 
-            const resDecrypt = await pbkdf2.decrypt(data, passwd, salt);
-            if (resDecrypt) {
-                LOCKED = false;
+            if (!data || !salt) {
+                sendResponse({ type: message.type, success: false });
+                return false;
+            }
 
-                let sessions = (await chrome.storage.session.get("sessions")).sessions;
+            const isValid = await pbkdf2.decrypt(data, passwd, salt);
+            if (isValid) {
+                state.locked = false;
+
+                // Restore sessions
+                const { sessions = 0 } = await chrome.storage.session.get("sessions");
                 if (sessions > 0) {
-                    while (sessions > 0) {
-                        await chrome.sessions.restore();
-                        sessions--;
-                    }
+                    // Restore all sessions in parallel
+                    const restorePromises = Array.from({ length: sessions }, () => 
+                        chrome.sessions.restore().catch(() => {})
+                    );
+                    await Promise.all(restorePromises);
                     await chrome.storage.session.remove("sessions");
                 } else {
                     await chrome.windows.create();
@@ -326,37 +327,42 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
         passwd: async (message, sender, sendResponse) => {
             await blocker.getConf();
             const { passwdNew, passwdLast } = message?.data || {};
-            const { data, salt } = config?.passwd || {};
+            const { data, salt } = state.config?.passwd || {};
 
-            if (!config?.passwd) {
-                const resEncrypt = await pbkdf2.encrypt(passwdNew);
-                // Generate recovery key for new password
-                const recoveryKey = generateRecoveryKey();
-                const recoveryHash = await hashRecoveryKey(recoveryKey);
+            // Setting new password (no existing password)
+            if (!state.config?.passwd) {
+                const [resEncrypt, recoveryKey, recoveryHash] = await Promise.all([
+                    pbkdf2.encrypt(passwdNew),
+                    Promise.resolve(generateRecoveryKey()),
+                    hashRecoveryKey(generateRecoveryKey())
+                ]);
                 
-                ALLOW_CHANGE = true;
+                state.allowChange = true;
                 await chrome.storage.local.set({ 
                     passwd: resEncrypt,
                     recoveryKeyHash: recoveryHash
                 });
-                sendResponse({ type: "passwd", success: true, recoveryKey: recoveryKey });
+                sendResponse({ type: "passwd", success: true, recoveryKey });
+                return;
+            }
+
+            // Changing existing password
+            const isValidOld = await pbkdf2.decrypt(data, passwdLast, salt);
+            if (isValidOld) {
+                const recoveryKey = generateRecoveryKey();
+                const [resEncrypt, recoveryHash] = await Promise.all([
+                    pbkdf2.encrypt(passwdNew),
+                    hashRecoveryKey(recoveryKey)
+                ]);
+                
+                state.allowChange = true;
+                await chrome.storage.local.set({ 
+                    passwd: resEncrypt,
+                    recoveryKeyHash: recoveryHash
+                });
+                sendResponse({ type: "passwd", success: true, recoveryKey });
             } else {
-                const resDecrypt = await pbkdf2.decrypt(data, passwdLast, salt);
-                if (resDecrypt) {
-                    const resEncrypt = await pbkdf2.encrypt(passwdNew);
-                    // Generate new recovery key when password is changed
-                    const recoveryKey = generateRecoveryKey();
-                    const recoveryHash = await hashRecoveryKey(recoveryKey);
-                    
-                    ALLOW_CHANGE = true;
-                    await chrome.storage.local.set({ 
-                        passwd: resEncrypt,
-                        recoveryKeyHash: recoveryHash
-                    });
-                    sendResponse({ type: "passwd", success: true, recoveryKey: recoveryKey });
-                } else {
-                    sendResponse({ type: "passwd", success: false });
-                }
+                sendResponse({ type: "passwd", success: false });
             }
         },
 
@@ -370,7 +376,7 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
         resetWithRecoveryKey: async (message, sender, sendResponse) => {
             await blocker.getConf();
             const { recoveryKey, newPassword } = message?.data || {};
-            const storedHash = config?.recoveryKeyHash;
+            const storedHash = state.config?.recoveryKeyHash;
 
             if (!storedHash) {
                 sendResponse({ type: "recovery", success: false, message: "No recovery key set" });
@@ -379,12 +385,13 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
 
             const isValid = await verifyRecoveryKey(recoveryKey, storedHash);
             if (isValid) {
-                const resEncrypt = await pbkdf2.encrypt(newPassword);
-                // Generate new recovery key
                 const newRecoveryKey = generateRecoveryKey();
-                const newRecoveryHash = await hashRecoveryKey(newRecoveryKey);
+                const [resEncrypt, newRecoveryHash] = await Promise.all([
+                    pbkdf2.encrypt(newPassword),
+                    hashRecoveryKey(newRecoveryKey)
+                ]);
                 
-                ALLOW_CHANGE = true;
+                state.allowChange = true;
                 await chrome.storage.local.set({ 
                     passwd: resEncrypt,
                     recoveryKeyHash: newRecoveryHash
@@ -401,28 +408,29 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
          * @returns {Promise<void>}
          */
         lockPannel: async (fromIcon = false) => {
-            if (!LOCKED) return;
+            if (!state.locked) return;
 
             await blocker.getConf();
 
-            if (!PASSWD_SETED) {
-                if (fromIcon) {
-                    await chrome.windows.create({
-                        type: "popup",
-                        width: 640,
-                        height: 580,
-                        focused: true,
-                        url: "./html/options.html"
-                    });
-                }
+            // If no password set, show options page
+            if (!state.passwdSet && fromIcon) {
+                await chrome.windows.create({
+                    type: "popup",
+                    width: 640,
+                    height: 580,
+                    focused: true,
+                    url: "./html/options.html"
+                });
                 return;
             }
 
-            // Get all windows immediately
+            if (!state.passwdSet) return;
+
+            // Get all windows
             const windows = await chrome.windows.getAll();
 
-            if (!PANNEL_OPENED) {
-                // Create unlock panel immediately with high priority
+            // Create or focus unlock panel
+            if (!state.pannelOpened) {
                 const createdPannel = await chrome.windows.create({
                     type: "popup",
                     width: 520,
@@ -431,26 +439,21 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
                     state: "normal",
                     url: "./html/unlock.html"
                 });
-                PANNEL_ID = createdPannel?.id;
-                PANNEL_OPENED = true;
+                state.pannelId = createdPannel?.id;
+                state.pannelOpened = true;
                 
-                // Close other windows after showing unlock panel (non-blocking)
-                Promise.all(
-                    windows.map(win => {
-                        if (win.id && win.id !== PANNEL_ID) {
-                            return chrome.windows.remove(win.id).catch(() => {});
-                        }
-                    })
-                );
+                // Close other windows (non-blocking)
+                windows.forEach(win => {
+                    if (win.id && win.id !== state.pannelId) {
+                        chrome.windows.remove(win.id).catch(() => {});
+                    }
+                });
             } else {
-                // If panel already exists, close other windows
-                await Promise.all(
-                    windows.map(win => {
-                        if (win.id && win.id !== PANNEL_ID) {
-                            return chrome.windows.remove(win.id).catch(() => {});
-                        }
-                    })
-                );
+                // If panel exists, close other windows
+                const closePromises = windows
+                    .filter(win => win.id && win.id !== state.pannelId)
+                    .map(win => chrome.windows.remove(win.id).catch(() => {}));
+                await Promise.all(closePromises);
             }
         },
 
@@ -459,72 +462,93 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
          * @returns {Promise<void>}
          */
         handle: async () => {
-            chrome.windows.onCreated.addListener(() => blocker.lockPannel());
+            // Window created - lock if password is set
+            chrome.windows.onCreated.addListener(() => {
+                if (state.passwdSet) blocker.lockPannel();
+            });
 
+            // Browser startup - lock immediately
             chrome.runtime.onStartup.addListener(async () => {
-                LOCKED = true;
-                await initConfig(); // Pre-load config
+                state.locked = true;
+                await initConfig();
                 await blocker.lockPannel();
             });
 
+            // Window removed - track panel state
             chrome.windows.onRemoved.addListener(async windowId => {
-                if (PANNEL_ID === windowId) {
-                    PANNEL_OPENED = false;
-                    PANNEL_ID = null;
+                if (state.pannelId === windowId) {
+                    state.pannelOpened = false;
+                    state.pannelId = null;
                 }
-                if ((await chrome.windows.getAll()).length === 0) {
-                    LOCKED = true;
+                const windows = await chrome.windows.getAll();
+                if (windows.length === 0) {
+                    state.locked = true;
                 }
             });
 
+            // Message handler with action routing
             chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 const actions = {
                     unlock: () => blocker.unlock(message, sender, sendResponse),
                     passwd: () => blocker.passwd(message, sender, sendResponse),
                     recovery: () => blocker.resetWithRecoveryKey(message, sender, sendResponse),
-                    config: () => {
-                        blocker.getConf().then(() => {
-                            sendResponse({ type: "config", success: true, data: config });
-                        });
+                    config: async () => {
+                        await blocker.getConf();
+                        sendResponse({ type: "config", success: true, data: state.config });
                     },
-                    status: () => sendResponse({ type: "status", success: true, data: { PANNEL_OPENED, LOCKED } })
+                    status: () => sendResponse({ 
+                        type: "status", 
+                        success: true, 
+                        data: { 
+                            PANNEL_OPENED: state.pannelOpened, 
+                            LOCKED: state.locked 
+                        } 
+                    })
                 };
 
-                if (actions[message.type]) actions[message.type]();
-                return true;
+                const handler = actions[message.type];
+                if (handler) {
+                    handler();
+                    return true; // Keep message channel open for async response
+                }
+                return false;
             });
 
-            chrome.storage.onChanged.addListener(async (changes) => {
-                await blocker.getConf();
-
-                if (ALLOW_CHANGE) {
-                    ALLOW_CHANGE = false;
+            // Storage change detection (anti-tampering)
+            chrome.storage.onChanged.addListener(async () => {
+                if (state.allowChange) {
+                    state.allowChange = false;
                     return;
                 }
 
+                // Unauthorized change detected - restore config
+                await blocker.getConf();
                 const newConfig = await chrome.storage.local.get();
                 const [configDigest, newConfigDigest] = await Promise.all([
-                    blocker.digestMessage(JSON.stringify(config)),
+                    blocker.digestMessage(JSON.stringify(state.config)),
                     blocker.digestMessage(JSON.stringify(newConfig))
                 ]);
 
                 if (configDigest !== newConfigDigest) {
-                    await chrome.storage.local.set(config);
+                    await chrome.storage.local.set(state.config);
                 }
             });
 
+            // Extension installed/updated
             chrome.runtime.onInstalled.addListener(async details => {
                 if (details.reason === "install") {
                     chrome.runtime.openOptionsPage();
                 } else if (details.reason === "update") {
                     await blocker.getConf();
-                    LOCKED = false;
+                    state.locked = false;
                 }
             });
 
+            // Action button clicked - toggle lock
             chrome.action.onClicked.addListener(() => blocker.lock(true));
         }
     };
 
+    // Initialize extension
     await blocker.init();
 })();

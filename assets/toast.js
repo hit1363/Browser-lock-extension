@@ -1,139 +1,83 @@
 /**
  * Lightweight Toast Notification System
- * Similar to React-Toastify but for vanilla JavaScript
+ * Provides toast notifications with customizable types and durations
+ * @module Toast
  */
 
-const Toast = {
-    container: null,
+const Toast = (() => {
+    let container = null;
+    const icons = { 
+        success: '✓', 
+        error: '✕', 
+        warning: '⚠', 
+        info: 'ℹ', 
+        default: '●' 
+    };
 
     /**
      * Initializes the toast container
-     * @returns {void}
+     * @private
      */
-    init() {
-        if (!this.container) {
-            this.container = document.createElement('div');
-            this.container.className = 'toast-container';
-            document.body.appendChild(this.container);
+    const init = () => {
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container';
+            document.body.appendChild(container);
         }
-    },
-
-    /**
-     * Shows a toast notification
-     * @param {string} message - The message to display
-     * @param {Object} options - Toast options
-     * @returns {void}
-     */
-    show(message, options = {}) {
-        this.init();
-
-        const {
-            type = 'default', // 'success', 'error', 'warning', 'info', 'default'
-            duration = 3000,
-            position = 'top-right',
-            autoClose = true
-        } = options;
-
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type} toast-${position}`;
-        
-        // Add icon based on type
-        const icon = this.getIcon(type);
-        
-        toast.innerHTML = `
-            <div class="toast-icon">${icon}</div>
-            <div class="toast-message">${message}</div>
-            <button class="toast-close" aria-label="Close notification">×</button>
-        `;
-
-        this.container.appendChild(toast);
-
-        // Trigger animation
-        setTimeout(() => toast.classList.add('toast-show'), 10);
-
-        // Close button
-        const closeBtn = toast.querySelector('.toast-close');
-        closeBtn.addEventListener('click', () => this.close(toast));
-
-        // Auto close
-        if (autoClose && duration > 0) {
-            setTimeout(() => this.close(toast), duration);
-        }
-    },
+    };
 
     /**
      * Closes a toast notification
      * @param {HTMLElement} toast - The toast element to close
-     * @returns {void}
      */
-    close(toast) {
+    const close = (toast) => {
+        if (!toast || !toast.parentNode) return;
         toast.classList.remove('toast-show');
         toast.classList.add('toast-hide');
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-        }, 300);
-    },
+        setTimeout(() => toast.parentNode?.removeChild(toast), 300);
+    };
 
     /**
-     * Gets icon for toast type
-     * @param {string} type - Toast type
-     * @returns {string} Icon HTML
-     */
-    getIcon(type) {
-        const icons = {
-            success: '✓',
-            error: '✕',
-            warning: '⚠',
-            info: 'ℹ',
-            default: '●'
-        };
-        return icons[type] || icons.default;
-    },
-
-    /**
-     * Shows a success toast
+     * Shows a toast notification
      * @param {string} message - The message to display
-     * @param {Object} options - Additional options
-     * @returns {void}
+     * @param {Object} [options={}] - Configuration options
+     * @param {string} [options.type='default'] - Toast type (success, error, warning, info, default)
+     * @param {number} [options.duration=3000] - Duration in milliseconds (0 = no auto-close)
+     * @param {boolean} [options.autoClose=true] - Whether to auto-close the toast
      */
-    success(message, options = {}) {
-        this.show(message, { ...options, type: 'success' });
-    },
+    const show = (message, { type = 'default', duration = 3000, autoClose = true } = {}) => {
+        init();
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type} toast-top-right`;
+        toast.innerHTML = `
+            <div class="toast-icon">${icons[type] || icons.default}</div>
+            <div class="toast-message">${message}</div>
+            <button class="toast-close" aria-label="Close">×</button>
+        `;
+        container.appendChild(toast);
+        
+        // Show toast with slight delay for animation
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => toast.classList.add('toast-show'));
+        });
+        
+        toast.querySelector('.toast-close').addEventListener('click', () => close(toast));
+        if (autoClose && duration > 0) {
+            setTimeout(() => close(toast), duration);
+        }
+    };
 
-    /**
-     * Shows an error toast
-     * @param {string} message - The message to display
-     * @param {Object} options - Additional options
-     * @returns {void}
-     */
-    error(message, options = {}) {
-        this.show(message, { ...options, type: 'error' });
-    },
+    return {
+        show,
+        close,
+        success: (msg, opt) => show(msg, { ...opt, type: 'success' }),
+        error: (msg, opt) => show(msg, { ...opt, type: 'error' }),
+        warning: (msg, opt) => show(msg, { ...opt, type: 'warning' }),
+        info: (msg, opt) => show(msg, { ...opt, type: 'info' })
+    };
+})();
 
-    /**
-     * Shows a warning toast
-     * @param {string} message - The message to display
-     * @param {Object} options - Additional options
-     * @returns {void}
-     */
-    warning(message, options = {}) {
-        this.show(message, { ...options, type: 'warning' });
-    },
-
-    /**
-     * Shows an info toast
-     * @param {string} message - The message to display
-     * @param {Object} options - Additional options
-     * @returns {void}
-     */
-    info(message, options = {}) {
-        this.show(message, { ...options, type: 'info' });
-    }
-};
-
-// Export for use in other files
+// Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = Toast;
 }

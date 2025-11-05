@@ -61,5 +61,11 @@
     },
     "notif_first": {
         "message": "<i>重要提示：<br>1. 此擴充功能僅在設定密碼後才能正常運作。<br>2. 為避免潛在衝突，請在設定密碼前確保未安裝類似的擴充功能。</i>"
+    },
+    "language_selector": {
+        "message": "語言"
+    },
+    "language_name": {
+        "message": "繁體中文"
     }
 }

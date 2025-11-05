@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "__MSG_ext_name__",
     "description": "__MSG_ext_des__",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "default_locale":"en",
     "icons":
     {
@@ -18,6 +18,9 @@
     {
         "service_worker": "./assets/main.js",
         "type": "module"
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
     },
     "options_ui":
     {
@@ -35,7 +38,7 @@
     },
     "web_accessible_resources": [
     {
-        "resources": ["img/*"],
+        "resources": ["img/*", "_locales/*/messages.json", "assets/*.js"],
         "matches": ["<all_urls>"]
     }]
 }

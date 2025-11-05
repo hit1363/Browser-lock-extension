@@ -61,5 +61,11 @@
     },
     "notif_first": {
         "message": "<i>Importante:<br>1. Esta extensión solo funcionará después de establecer una contraseña.<br>2. Para evitar posibles conflictos, asegúrate de no tener instaladas otras extensiones similares antes de configurar la contraseña.</i>"
+    },
+    "language_selector": {
+        "message": "Idioma"
+    },
+    "language_name": {
+        "message": "Español"
     }
 }

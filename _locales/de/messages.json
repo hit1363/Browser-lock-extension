@@ -61,5 +61,11 @@
     },
     "notif_first": {
         "message": "<i>Wichtig:<br>1. Diese Erweiterung funktioniert nur, nachdem ein Passwort festgelegt wurde.<br>2. Um mögliche Konflikte zu vermeiden, stellen Sie sicher, dass keine ähnlichen Erweiterungen installiert sind, bevor Sie das Passwort festlegen.</i>"
+    },
+    "language_selector": {
+        "message": "Sprache"
+    },
+    "language_name": {
+        "message": "Deutsch"
     }
 }

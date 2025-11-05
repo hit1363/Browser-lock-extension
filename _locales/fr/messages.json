@@ -60,6 +60,12 @@
         "message": "Voir le Code Source"
     },
     "notif_first": {
-        "message": "<i>Important :<br>1. Cette extension ne fonctionnera qu'après la définition d’un mot de passe.<br>2. Pour éviter d'éventuels conflits, assurez-vous qu'aucune autre extension similaire n'est installée avant de définir votre mot de passe.</i>"
+        "message": "<i>Important :<br>1. Cette extension ne fonctionnera qu'après la définition d'un mot de passe.<br>2. Pour éviter d'éventuels conflits, assurez-vous qu'aucune autre extension similaire n'est installée avant de définir votre mot de passe.</i>"
+    },
+    "language_selector": {
+        "message": "Langue"
+    },
+    "language_name": {
+        "message": "Français"
     }
 }

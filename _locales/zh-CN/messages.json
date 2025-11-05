@@ -61,5 +61,11 @@
     },
     "notif_first": {
         "message": "<i>重要提示：<br>1. 此扩展程序仅在设置密码后才能正常工作。<br>2. 为避免潜在冲突，请在设置密码前确保未安装类似扩展程序。</i>"
+    },
+    "language_selector": {
+        "message": "语言"
+    },
+    "language_name": {
+        "message": "简体中文"
     }
 }

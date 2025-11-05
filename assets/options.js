@@ -1,107 +1,7 @@
-// Import Toast notification system
-const Toast = (() => {
-    let container = null;
-
-    return {
-        init() {
-            if (!container) {
-                container = document.createElement('div');
-                container.className = 'toast-container';
-                document.body.appendChild(container);
-            }
-        },
-
-        show(message, options = {}) {
-            this.init();
-            const { type = 'default', duration = 3000, autoClose = true } = options;
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type} toast-top-right`;
-            
-            const icons = {
-                success: '✓',
-                error: '✕',
-                warning: '⚠',
-                info: 'ℹ',
-                default: '●'
-            };
-            
-            toast.innerHTML = `
-                <div class="toast-icon">${icons[type] || icons.default}</div>
-                <div class="toast-message">${message}</div>
-                <button class="toast-close" aria-label="Close notification">×</button>
-            `;
-
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('toast-show'), 10);
-
-            toast.querySelector('.toast-close').addEventListener('click', () => this.close(toast));
-
-            if (autoClose && duration > 0) {
-                setTimeout(() => this.close(toast), duration);
-            }
-        },
-
-        close(toast) {
-            toast.classList.remove('toast-show');
-            toast.classList.add('toast-hide');
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
-                }
-            }, 300);
-        },
-
-        success(message, options = {}) {
-            this.show(message, { ...options, type: 'success' });
-        },
-
-        error(message, options = {}) {
-            this.show(message, { ...options, type: 'error' });
-        },
-
-        warning(message, options = {}) {
-            this.show(message, { ...options, type: 'warning' });
-        },
-
-        info(message, options = {}) {
-            this.show(message, { ...options, type: 'info' });
-        }
-    };
-})();
-
-/** @type {string|null} Current dark mode preference from localStorage */
-let darkmode = localStorage.getItem("darkmode");
-
 /**
- * Enables dark mode by adding CSS class and storing preference
- * @returns {void}
+ * Browser Lock Extension - Options Page
+ * Manages password setup and configuration
  */
-const enableDarkMode = () => {
-    document.body.classList.add("dark-mode");
-    localStorage.setItem("darkmode", "active");
-};
-
-/**
- * Disables dark mode by removing CSS class and clearing preference
- * @returns {void}
- */
-const disableDarkMode = () => {
-    document.body.classList.remove("dark-mode");
-    localStorage.setItem("darkmode", null);
-};
-
-if (darkmode === "active") {
-    enableDarkMode();
-}
-
-// Initialize theme toggle after DOM is ready
-const themeToggle = document.querySelector(".theme-toggle");
-if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-        darkmode = localStorage.getItem("darkmode");
-        darkmode !== "active" ? enableDarkMode() : disableDarkMode();
-    });
-}
 
 /** @type {Object|null} Extension configuration from storage */
 let config;
@@ -160,8 +60,14 @@ const blo = {
             Object.assign(document.querySelector(selector).style, styles);
         });
 
-        // Initialize password visibility toggles
-        blo.initPasswordToggles();
+        // Initialize password visibility toggles using shared Utils module
+        Utils.initPasswordToggles();
+
+        // Show/hide toggle button for passwd-last based on visibility
+        const passwdLastWrapper = document.querySelector('[data-target="passwd-last"]');
+        if (passwdLastWrapper) {
+            passwdLastWrapper.style.display = config?.passwd ? "flex" : "none";
+        }
 
         // Add direct event listener to save button
         const saveButton = document.querySelector("#btn-save");
@@ -170,87 +76,6 @@ const blo = {
                 blo.passwd();
             });
         }
-    },
-
-    /**
-     * Initialize password visibility toggle buttons
-     */
-    initPasswordToggles: () => {
-        const toggleButtons = document.querySelectorAll(".toggle-password");
-        toggleButtons.forEach(button => {
-            button.addEventListener("click", function() {
-                const targetId = this.getAttribute("data-target");
-                const targetInput = document.getElementById(targetId);
-                const eyeIcon = this.querySelector(".eye-icon");
-                const eyeOffIcon = this.querySelector(".eye-off-icon");
-
-                if (targetInput.type === "password") {
-                    targetInput.type = "text";
-                    eyeIcon.style.display = "none";
-                    eyeOffIcon.style.display = "block";
-                    this.setAttribute("aria-label", chrome.i18n.getMessage("toggle_hide_password") || "Hide password");
-                } else {
-                    targetInput.type = "password";
-                    eyeIcon.style.display = "block";
-                    eyeOffIcon.style.display = "none";
-                    this.setAttribute("aria-label", chrome.i18n.getMessage("toggle_show_password") || "Show password");
-                }
-            });
-        });
-
-        // Show/hide toggle button for passwd-last based on visibility
-        const passwdLastWrapper = document.querySelector('[data-target="passwd-last"]');
-        if (passwdLastWrapper) {
-            passwdLastWrapper.style.display = config?.passwd ? "flex" : "none";
-        }
-    },
-
-    /**
-     * Validates password strength
-     * @param {string} password - Password to validate
-     * @returns {Object} - {isValid: boolean, message: string, strength: string}
-     */
-    validatePasswordStrength: (password) => {
-        const minLength = 6;
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
-        const hasNumbers = /\d/.test(password);
-        const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-
-        if (password.length < minLength) {
-            return {
-                isValid: false,
-                message: chrome.i18n.getMessage("notif_passwd_too_short") || `Password must be at least ${minLength} characters`,
-                strength: "weak"
-            };
-        }
-
-        let strength = 0;
-        if (hasUpperCase) strength++;
-        if (hasLowerCase) strength++;
-        if (hasNumbers) strength++;
-        if (hasSpecialChar) strength++;
-        if (password.length >= 12) strength++;
-
-        let strengthLevel = "weak";
-        let strengthMessage = "";
-
-        if (strength >= 4) {
-            strengthLevel = "strong";
-            strengthMessage = chrome.i18n.getMessage("notif_passwd_strong") || "Strong password";
-        } else if (strength >= 2) {
-            strengthLevel = "medium";
-            strengthMessage = chrome.i18n.getMessage("notif_passwd_medium") || "Medium password";
-        } else {
-            strengthLevel = "weak";
-            strengthMessage = chrome.i18n.getMessage("notif_passwd_weak") || "Weak password - use uppercase, lowercase, numbers, and symbols";
-        }
-
-        return {
-            isValid: true,
-            message: strengthMessage,
-            strength: strengthLevel
-        };
     },
 
     /**
@@ -276,25 +101,22 @@ const blo = {
         `;
         document.body.appendChild(modal);
 
-        // Copy functionality
-        modal.querySelector(".recovery-copy").addEventListener("click", () => {
-            navigator.clipboard.writeText(recoveryKey);
-            const btn = modal.querySelector(".recovery-copy");
-            btn.innerText = chrome.i18n.getMessage("recovery_copied") || "✓ Copied!";
-            setTimeout(() => {
-                btn.innerText = chrome.i18n.getMessage("recovery_copy") || "Copy Key";
-            }, 2000);
+        // Copy functionality using shared Utils
+        modal.querySelector(".recovery-copy").addEventListener("click", async () => {
+            const success = await Utils.copyToClipboard(recoveryKey);
+            if (success) {
+                const btn = modal.querySelector(".recovery-copy");
+                btn.innerText = chrome.i18n.getMessage("recovery_copied") || "✓ Copied!";
+                setTimeout(() => {
+                    btn.innerText = chrome.i18n.getMessage("recovery_copy") || "Copy Key";
+                }, 2000);
+            }
         });
 
-        // Download functionality
+        // Download functionality using shared Utils
         modal.querySelector(".recovery-download").addEventListener("click", () => {
-            const blob = new Blob([`Browser Lock Extension - Recovery Key\n\nYour Recovery Key: ${recoveryKey}\n\nKeep this safe! You'll need it to reset your password.\nDate: ${new Date().toLocaleDateString()}`], { type: "text/plain" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "browser-lock-recovery-key.txt";
-            a.click();
-            URL.revokeObjectURL(url);
+            const content = `Browser Lock Extension - Recovery Key\n\nYour Recovery Key: ${recoveryKey}\n\nKeep this safe! You'll need it to reset your password.\nDate: ${new Date().toLocaleDateString()}`;
+            Utils.downloadText(content, "browser-lock-recovery-key.txt");
         });
 
         // Close functionality
@@ -312,11 +134,11 @@ const blo = {
      */
     handleEvent: event => {
         if (event.type === "input") {
-            event.target.value = event.target.value.trim();
+            event.target.value = Utils.sanitizeInput(event.target.value);
             
             // Show password strength indicator while typing new password
             if (event.target.id === "passwd-new") {
-                const validation = blo.validatePasswordStrength(event.target.value);
+                const validation = Utils.validatePasswordStrength(event.target.value);
                 const strengthIndicator = document.querySelector(".password-strength");
                 if (strengthIndicator && event.target.value) {
                     strengthIndicator.innerText = validation.message;
@@ -345,10 +167,13 @@ const blo = {
             ".password-input#passwd-new",
             ".password-input#passwd-new-check",
         ].map(selector => document.querySelector(selector));
-        const [passwdLast, passwdNew, passwdCheck] = [domPasswdLast.value, domPasswdNew.value, domPasswdCheck.value].map(val => val.trim());
         
-        // Validate password strength
-        const validation = blo.validatePasswordStrength(passwdNew);
+        const passwdLast = Utils.sanitizeInput(domPasswdLast.value);
+        const passwdNew = Utils.sanitizeInput(domPasswdNew.value);
+        const passwdCheck = Utils.sanitizeInput(domPasswdCheck.value);
+        
+        // Validate password strength using shared Utils
+        const validation = Utils.validatePasswordStrength(passwdNew);
         if (!validation.isValid) {
             Toast.error(validation.message);
             return;
@@ -383,5 +208,27 @@ chrome.runtime.sendMessage({ type: "config" }, response => {
     if (response.success) {
         config = response.data;
         blo.init();
+        
+        // Initialize language switcher with UI update callback
+        LanguageSwitcher.init(async (getMsg) => {
+            // Update placeholders
+            ['#passwd-last', '#passwd-new', '#passwd-new-check'].forEach((id, i) => {
+                const key = ['title_last_passwd', 'title_new_passwd', 'title_new_check_passwd'][i];
+                document.querySelector(id)?.setAttribute('placeholder', getMsg(key));
+            });
+
+            // Update text content
+            const title = config?.passwd ? getMsg('title_change_passwd') : getMsg('title_set_passwd');
+            document.querySelector('.password-title').textContent = title;
+            document.querySelector('.button').textContent = getMsg('btn_save');
+            document.querySelector('#link-review').textContent = getMsg('link_review');
+            document.querySelector('#link-source').textContent = getMsg('link_source');
+            document.querySelector('.first-user-notification').innerHTML = getMsg('notif_first');
+
+            // Update aria-labels
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.setAttribute('aria-label', getMsg('toggle_show_password'));
+            });
+        });
     }
 });
