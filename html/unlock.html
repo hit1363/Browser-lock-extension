@@ -12,6 +12,12 @@
         .password-input { width: 100%; font-size: 16px; height: 48px; padding: 15px; margin: 4px; border-radius: 10px; }
     </style>
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
+    <!-- Inline script to apply dark mode immediately -->
+    <script>
+        if (localStorage.getItem("darkmode") === "active") {
+            document.body.classList.add("dark-mode");
+        }
+    </script>
     <!-- Shared Modules -->
     <script src="../assets/toast.js"></script>
     <script src="../assets/theme.js"></script>
@@ -21,30 +27,6 @@
 
 <body>
     <header>
-        <div class="language-selector">
-            <button class="language-toggle" aria-label="Change language" aria-haspopup="true" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
-                    <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.5-68.5T322-320H204q29 50 72.5 87t99.5 55Zm208 0q56-18 99.5-55t72.5-87H638q-9 38-22.5 73.5T584-178ZM170-400h136q-3-20-4.5-39.5T300-480q0-21 1.5-40.5T306-560H170q-5 20-7.5 39.5T160-480q0 21 2.5 40.5T170-400Zm216 0h188q3-20 4.5-39.5T580-480q0-21-1.5-40.5T574-560H386q-3 20-4.5 39.5T380-480q0 21 1.5 40.5T386-400Zm268 0h136q5-20 7.5-39.5T800-480q0-21-2.5-40.5T790-560H654q3 20 4.5 39.5T660-480q0 21-1.5 40.5T654-400Zm-16-240h118q-29-50-72.5-87T584-782q18 33 31.5 68.5T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.5-73.5T376-782q-56 18-99.5 55T204-640Z"/>
-                </svg>
-                <span class="language-label"></span>
-                <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
-                    <path d="M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z"/>
-                </svg>
-            </button>
-            <div class="language-dropdown" role="menu" aria-label="Select language">
-                <button class="language-option" data-lang="en" role="menuitem">English</button>
-                <button class="language-option" data-lang="bn" role="menuitem">বাংলা</button>
-                <button class="language-option" data-lang="ar" role="menuitem">العربية</button>
-                <button class="language-option" data-lang="de" role="menuitem">Deutsch</button>
-                <button class="language-option" data-lang="es" role="menuitem">Español</button>
-                <button class="language-option" data-lang="fr" role="menuitem">Français</button>
-                <button class="language-option" data-lang="hi" role="menuitem">हिन्दी</button>
-                <button class="language-option" data-lang="ja" role="menuitem">日本語</button>
-                <button class="language-option" data-lang="ru" role="menuitem">Русский</button>
-                <button class="language-option" data-lang="zh-CN" role="menuitem">简体中文</button>
-                <button class="language-option" data-lang="zh-TW" role="menuitem">繁體中文</button>
-            </div>
-        </div>
         <button class="theme-toggle" aria-label="Toggle dark mode">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3" aria-hidden="true">
                 <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z" />
