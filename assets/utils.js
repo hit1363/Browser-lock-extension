@@ -139,13 +139,39 @@ const Utils = (() => {
         }
     };
 
+    /**
+     * Sends a runtime message with robust MV3 error handling.
+     * Resolves to the response object, or undefined if the message could not be delivered.
+     * @param {any} message - Message payload
+     * @returns {Promise<any|undefined>}
+     */
+    const sendMessage = (message) => {
+        return new Promise((resolve) => {
+            try {
+                chrome.runtime.sendMessage(message, (response) => {
+                    const lastError = chrome.runtime.lastError;
+                    if (lastError) {
+                        console.error('chrome.runtime.sendMessage failed:', lastError);
+                        resolve(undefined);
+                        return;
+                    }
+                    resolve(response);
+                });
+            } catch (error) {
+                console.error('chrome.runtime.sendMessage threw:', error);
+                resolve(undefined);
+            }
+        });
+    };
+
     return {
         validatePasswordStrength,
         sanitizeInput,
         initPasswordToggles,
         debounce,
         downloadText,
-        copyToClipboard
+        copyToClipboard,
+        sendMessage
     };
 })();
 

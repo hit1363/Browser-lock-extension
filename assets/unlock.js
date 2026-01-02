@@ -23,7 +23,8 @@ const LanguageSwitcher = (() => {
     const updateUI = async () => {
         const msgs = await loadMessages(lang);
         const getMsg = k => msgs[k]?.message || k;
-        document.querySelector('.unlock-title')?.setAttribute('textContent', getMsg('title_unlock'));
+        const title = document.querySelector('.unlock-title');
+        if (title) title.textContent = getMsg('title_unlock');
         const input = document.querySelector('#unlock-passwd');
         if (input) input.placeholder = getMsg('title_unlock');
         document.querySelectorAll('.toggle-password').forEach(b => b.setAttribute('aria-label', getMsg('toggle_show_password')));
@@ -69,15 +70,6 @@ const LanguageSwitcher = (() => {
 })();
 
 LanguageSwitcher.init();
-
-// Dark mode toggle (lightweight)
-const darkMode = localStorage.getItem("darkmode");
-if (darkMode === "active") document.body.classList.add("dark-mode");
-
-document.querySelector(".theme-toggle")?.addEventListener("click", () => {
-    const isActive = document.body.classList.toggle("dark-mode");
-    localStorage.setItem("darkmode", isActive ? "active" : null);
-});
 
 // Main unlock functionality (optimized)
 (() => {
@@ -216,7 +208,7 @@ document.querySelector(".theme-toggle")?.addEventListener("click", () => {
             if (pwd.length < 6) return showNotif("Password must be at least 6 characters", "#e74c3c");
 
             try {
-                const res = await chrome.runtime.sendMessage({type: "recovery", data: {recoveryKey: key, newPassword: pwd}});
+                const res = await Utils.sendMessage({type: "recovery", data: {recoveryKey: key, newPassword: pwd}});
                 if (res?.success) {
                     notif.style.color = "#2ecc71";
                     notif.innerText = "✓ Password reset!";
@@ -258,7 +250,7 @@ document.querySelector(".theme-toggle")?.addEventListener("click", () => {
             const pwd = input.value.trim();
 
             try {
-                const res = await chrome.runtime.sendMessage({type: "unlock", data: {passwd: pwd}});
+                const res = await Utils.sendMessage({type: "unlock", data: {passwd: pwd}});
                 if (res?.success) {
                     this.failedAttempts = 0;
                     Toast.success("✓ Unlocked!", {duration: 1000});
@@ -285,7 +277,7 @@ document.querySelector(".theme-toggle")?.addEventListener("click", () => {
 
         async checkStatus() {
             try {
-                const res = await chrome.runtime.sendMessage({type: "status"});
+                const res = await Utils.sendMessage({type: "status"});
                 if (!res?.data?.LOCKED) {
                     await chrome.windows.create();
                     window.close();

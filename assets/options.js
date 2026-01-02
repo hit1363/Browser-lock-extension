@@ -180,7 +180,7 @@ const blo = {
         }
 
         if (passwdNew && passwdNew === passwdCheck) {
-            const response = await chrome.runtime.sendMessage({ type: "passwd", data: { passwdNew, passwdLast } });
+            const response = await Utils.sendMessage({ type: "passwd", data: { passwdNew, passwdLast } });
             
             if (response?.success && response?.recoveryKey) {
                 // Password set or changed successfully - show recovery key
@@ -204,31 +204,39 @@ const blo = {
     },
 };
 
-chrome.runtime.sendMessage({ type: "config" }, response => {
-    if (response.success) {
-        config = response.data;
+(async () => {
+    const response = await Utils.sendMessage({ type: "config" });
+
+    if (!response?.success) {
+        console.error("Failed to fetch config; unexpected response:", response);
+        Toast?.error(chrome.i18n.getMessage("error_loading_config") || "Failed to load extension settings");
+        config = config ?? {};
         blo.init();
-        
-        // Initialize language switcher with UI update callback
-        LanguageSwitcher.init(async (getMsg) => {
-            // Update placeholders
-            ['#passwd-last', '#passwd-new', '#passwd-new-check'].forEach((id, i) => {
-                const key = ['title_last_passwd', 'title_new_passwd', 'title_new_check_passwd'][i];
-                document.querySelector(id)?.setAttribute('placeholder', getMsg(key));
-            });
-
-            // Update text content
-            const title = config?.passwd ? getMsg('title_change_passwd') : getMsg('title_set_passwd');
-            document.querySelector('.password-title').textContent = title;
-            document.querySelector('.button').textContent = getMsg('btn_save');
-            document.querySelector('#link-review').textContent = getMsg('link_review');
-            document.querySelector('#link-source').textContent = getMsg('link_source');
-            document.querySelector('.first-user-notification').innerHTML = getMsg('notif_first');
-
-            // Update aria-labels
-            document.querySelectorAll('.toggle-password').forEach(btn => {
-                btn.setAttribute('aria-label', getMsg('toggle_show_password'));
-            });
-        });
+        return;
     }
-});
+
+    config = response.data;
+    blo.init();
+
+    // Initialize language switcher with UI update callback
+    LanguageSwitcher.init(async (getMsg) => {
+        // Update placeholders
+        ['#passwd-last', '#passwd-new', '#passwd-new-check'].forEach((id, i) => {
+            const key = ['title_last_passwd', 'title_new_passwd', 'title_new_check_passwd'][i];
+            document.querySelector(id)?.setAttribute('placeholder', getMsg(key));
+        });
+
+        // Update text content
+        const title = config?.passwd ? getMsg('title_change_passwd') : getMsg('title_set_passwd');
+        document.querySelector('.password-title').textContent = title;
+        document.querySelector('.button').textContent = getMsg('btn_save');
+        document.querySelector('#link-review').textContent = getMsg('link_review');
+        document.querySelector('#link-source').textContent = getMsg('link_source');
+        document.querySelector('.first-user-notification').innerHTML = getMsg('notif_first');
+
+        // Update aria-labels
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.setAttribute('aria-label', getMsg('toggle_show_password'));
+        });
+    });
+})();

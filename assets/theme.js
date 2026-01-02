@@ -9,11 +9,17 @@ const Theme = (() => {
     const DARK_MODE_CLASS = 'dark-mode';
     const ACTIVE_VALUE = 'active';
 
+    const applyDarkModeClass = (enabled) => {
+        // Keep <html> and <body> in sync (some pages set class early in <head>)
+        document.documentElement.classList.toggle(DARK_MODE_CLASS, enabled);
+        if (document.body) document.body.classList.toggle(DARK_MODE_CLASS, enabled);
+    };
+
     /**
      * Enables dark mode
      */
     const enableDarkMode = () => {
-        document.body.classList.add(DARK_MODE_CLASS);
+        applyDarkModeClass(true);
         localStorage.setItem(STORAGE_KEY, ACTIVE_VALUE);
     };
 
@@ -21,7 +27,7 @@ const Theme = (() => {
      * Disables dark mode
      */
     const disableDarkMode = () => {
-        document.body.classList.remove(DARK_MODE_CLASS);
+        applyDarkModeClass(false);
         localStorage.setItem(STORAGE_KEY, null);
     };
 

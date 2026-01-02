@@ -486,34 +486,6 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
                 }
             });
 
-            // Message handler with action routing
-            chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-                const actions = {
-                    unlock: () => blocker.unlock(message, sender, sendResponse),
-                    passwd: () => blocker.passwd(message, sender, sendResponse),
-                    recovery: () => blocker.resetWithRecoveryKey(message, sender, sendResponse),
-                    config: async () => {
-                        await blocker.getConf();
-                        sendResponse({ type: "config", success: true, data: state.config });
-                    },
-                    status: () => sendResponse({ 
-                        type: "status", 
-                        success: true, 
-                        data: { 
-                            PANNEL_OPENED: state.pannelOpened, 
-                            LOCKED: state.locked 
-                        } 
-                    })
-                };
-
-                const handler = actions[message.type];
-                if (handler) {
-                    handler();
-                    return true; // Keep message channel open for async response
-                }
-                return false;
-            });
-
             // Storage change detection (anti-tampering)
             chrome.storage.onChanged.addListener(async () => {
                 if (state.allowChange) {
@@ -548,6 +520,42 @@ const verifyRecoveryKey = async (recoveryKey, storedHash) => {
             chrome.action.onClicked.addListener(() => blocker.lock(true));
         }
     };
+
+    // Register message handler synchronously (before any awaits).
+    // In MV3, if the listener is registered only after async init, early sendMessage calls
+    // (e.g., options page opening) can fail with: "Receiving end does not exist".
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        const actions = {
+            unlock: () => blocker.unlock(message, sender, sendResponse),
+            passwd: () => blocker.passwd(message, sender, sendResponse),
+            recovery: () => blocker.resetWithRecoveryKey(message, sender, sendResponse),
+            config: async () => {
+                await blocker.getConf();
+                sendResponse({ type: "config", success: true, data: state.config });
+            },
+            status: () => sendResponse({
+                type: "status",
+                success: true,
+                data: {
+                    PANNEL_OPENED: state.pannelOpened,
+                    LOCKED: state.locked
+                }
+            })
+        };
+
+        const handler = actions[message?.type];
+        if (!handler) {
+            return false;
+        }
+
+        try {
+            handler();
+        } catch (err) {
+            console.error("Message handler error:", err);
+            sendResponse({ type: message?.type, success: false });
+        }
+        return true;
+    });
 
     // Initialize extension
     await blocker.init();
